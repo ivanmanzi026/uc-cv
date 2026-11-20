@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProCV - Create Professional CVs in Minutes</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Template preview styles */
+        .template-preview-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            border: 2px solid transparent;
+            position: relative;
+        }
+        .template-preview-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+        .template-preview-card .preview-image {
+            width: 100%;
+            aspect-ratio: 210/297;
+            background: var(--gray-100);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .template-preview-card .preview-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .template-preview-card .preview-info {
+            padding: 16px;
+        }
+        .template-preview-card .preview-info h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        .template-preview-card .preview-info p {
+            font-size: 13px;
+            color: var(--gray-600);
+            margin-top: 4px;
+        }
+        .template-preview-card .preview-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .template-preview-card .preview-actions .btn {
+            flex: 1;
+            justify-content: center;
+            font-size: 13px;
+            padding: 8px 16px;
+        }
+        .template-preview-card .badge-premium {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            color: white;
+            padding: 2px 12px;
+            border-radius: 50px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+        }
+        .template-preview-card .badge-free {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--gray-200);
+            color: var(--gray-600);
+            padding: 2px 12px;
+            border-radius: 50px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .template-preview-card .badge-portfolio {
+            position: absolute;
+            top: 40px;
+            right: 10px;
+            background: linear-gradient(135deg, #7C3AED, #2563EB);
+            color: white;
+            padding: 2px 12px;
+            border-radius: 50px;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .template-preview-card .badge-locked {
+            position: absolute;
+            top: 70px;
+            right: 10px;
+            background: var(--gray-700);
+            color: white;
+            padding: 2px 12px;
+            border-radius: 50px;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .template-category-tabs {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 32px;
+        }
+        .template-category-tabs .tab-btn {
+            padding: 8px 20px;
+            border: 2px solid var(--gray-200);
+            border-radius: 50px;
+            background: var(--white);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .template-category-tabs .tab-btn:hover {
+            border-color: var(--primary-light);
+        }
+        .template-category-tabs .tab-btn.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: var(--white);
+        }
+        .a4-preview {
+            width: 794px;
+            height: 1123px;
+            background: white;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+            flex-shrink: 0;
+            transform: scale(0.65);
+            transform-origin: top center;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #e2e8f0;
+        }
+        .section-header .section-subtitle {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-top: 4px;
+        }
+        .loading-templates {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .loading-templates i {
+            font-size: 32px;
+            color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .modal-content.modal-lg {
+            max-width: 820px;
+        }
+        .modal-body .preview-scroll {
+            max-height: 80vh;
+            overflow: auto;
+            background: #f0f0f0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="nav-logo">
+                    <a href="index.html">
+                        <span class="logo-icon">📄</span>
+                        <span class="logo-text">Pro<span class="highlight">CV</span></span>
+                    </a>
+                </div>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#templates">Templates</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="my-cvs.html">My CVs</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <div id="authButtons">
+                        <button class="btn btn-outline btn-sm" onclick="openLoginModal()">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                        <button class="btn btn-primary btn-sm" onclick="openLoginModal()">
+                            <i class="fas fa-plus-circle"></i> Create My CV
+                        </button>
+                    </div>
+                    <div id="userProfile" style="display:none;">
+                        <div class="user-profile-btn" onclick="toggleUserMenu()">
+                            <img id="userAvatar" src="" alt="User">
+                            <span id="userName">User</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="builder.html"><i class="fas fa-file-alt"></i> My CV</a>
+                            <a href="my-cvs.html"><i class="fas fa-folder"></i> All My CVs</a>
+                            <a href="#" onclick="showUserProfile()"><i class="fas fa-user"></i> Profile</a>
+                            <a href="#" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== HERO SECTION ===== -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-wrapper">
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <span class="badge">🚀 Free to use</span>
+                    </div>
+                    <h1 class="hero-title">
+                        Create a Professional <br>
+                        <span class="gradient-text">CV in Minutes</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Build a clean, professional CV without design skills. 
+                        Choose from expert templates, customize instantly, 
+                        and download as PDF. Share your portfolio-style CV 
+                        with a live link.
+                    </p>
+                    <div class="hero-actions">
+                        <button class="btn btn-primary btn-lg" onclick="document.getElementById('templates').scrollIntoView({behavior: 'smooth'})">
+                            <i class="fas fa-eye"></i> View Templates
+                        </button>
+                        <button class="btn btn-outline btn-lg" onclick="openLoginModal()">
+                            <i class="fas fa-rocket"></i> Create My CV
+                        </button>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <span class="stat-number" id="totalTemplates">10+</span>
+                            <span class="stat-label">Templates</span>
+                        </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat">
+                            <span class="stat-number" id="totalUsers">5k+</span>
+                            <span class="stat-label">CVs Created</span>
+                        </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat">
+                            <span class="stat-number">98%</span>
+                            <span class="stat-label">Satisfaction</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="hero-preview-card">
+                        <div class="preview-mockup">
+                            <div class="mockup-header">
+                                <span class="mockup-dot red"></span>
+                                <span class="mockup-dot yellow"></span>
+                                <span class="mockup-dot green"></span>
+                            </div>
+                            <div class="mockup-body">
+                                <div class="mockup-avatar"></div>
+                                <div class="mockup-name">Jane Doe</div>
+                                <div class="mockup-title">Front-End Developer</div>
+                                <div class="mockup-line"></div>
+                                <div class="mockup-line short"></div>
+                                <div class="mockup-line"></div>
+                                <div class="mockup-line short"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TEMPLATES SECTION ===== -->
+    <section class="templates-preview" id="templates">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Templates</span>
+                <h2>Choose Your <span class="highlight">Perfect Style</span></h2>
+                <p>Browse our templates and customize the one you love</p>
+                <p class="section-subtitle">📄 Standard CVs for professional use • 🎨 Portfolio CVs for creative showcase with live links</p>
+            </div>
+
+            <div class="templates-grid" id="templatesGrid">
+                <!-- Templates loaded dynamically -->
+                <div class="loading-templates">
+                    <i class="fas fa-spinner fa-spin"></i> Loading templates...
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== HOW IT WORKS ===== -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">How It Works</span>
+                <h2>Create Your CV in <span class="highlight">3 Steps</span></h2>
+                <p>Simple, fast, and completely free</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">👀</div>
+                    <h3>Browse Templates</h3>
+                    <p>Explore our professionally designed templates including portfolio-style CVs.</p>
+                </div>
+                <div class="step-arrow">→</div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">✏️</div>
+                    <h3>Customize</h3>
+                    <p>Login and customize your chosen template with your personal information.</p>
+                </div>
+                <div class="step-arrow">→</div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">📥</div>
+                    <h3>Share or Download</h3>
+                    <p>Download as PDF or share your portfolio CV with a live link.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FEATURES ===== -->
+    <section class="features">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Features</span>
+                <h2>Everything You Need to <span class="highlight">Succeed</span></h2>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Professional Templates</h3>
+                    <p>Expertly designed, ATS-compatible templates that hiring managers love.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👁️</div>
+                    <h3>Live Preview</h3>
+                    <p>See changes instantly as you type. No page refresh needed.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Easy Editing</h3>
+                    <p>Add, remove, or reorder sections. Full control over your CV.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📄</div>
+                    <h3>PDF Export</h3>
+                    <p>Download A4 PDFs with perfect formatting, ready for job applications.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3>Auto-Save</h3>
+                    <p>Your data saves automatically. Close and reopen without losing progress.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔗</div>
+                    <h3>Live Link</h3>
+                    <p>Share your portfolio CV with a hosted link that works on any device.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PRICING PREVIEW ===== -->
+    <section class="pricing-preview">
+        <div class="container">
+            <div class="pricing-preview-wrapper">
+                <div class="pricing-content">
+                    <span class="section-tag">Pricing</span>
+                    <h2>Start <span class="highlight">Free</span>, Upgrade Later</h2>
+                    <p>Build professional CVs at no cost. Premium features unlock even more.</p>
+                    <div class="pricing-buttons">
+                        <button class="btn btn-primary" onclick="window.location.href='pricing.html'">
+                            <i class="fas fa-crown"></i> View Plans
+                        </button>
+                    </div>
+                </div>
+                <div class="pricing-cards-mini">
+                    <div class="price-card-mini free">
+                        <h4>Free</h4>
+                        <p class="price">$0</p>
+                        <ul>
+                            <li>✓ 3 Free Templates</li>
+                            <li>✓ Customize Your CV</li>
+                            <li>✓ PDF Export</li>
+                        </ul>
+                    </div>
+                    <div class="price-card-mini pro">
+                        <h4>Pro</h4>
+                        <p class="price">RWF 2,000</p>
+                        <ul>
+                            <li>✓ All Templates</li>
+                            <li>✓ Portfolio Designs</li>
+                            <li>✓ Live Link</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="footer-logo">
+                        <span class="logo-icon">📄</span>
+                        <span class="logo-text">Pro<span class="highlight">CV</span></span>
+                    </a>
+                    <p>Create professional CVs that land you your dream job.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="builder.html">Create CV</a></li>
+                        <li><a href="#templates">Templates</a></li>
+                        <li><a href="pricing.html">Pricing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">CV Tips</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Help Center</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ProCV. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== LOGIN MODAL ===== -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-sign-in-alt"></i> Welcome to ProCV</h3>
+                <button class="modal-close" onclick="closeLoginModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="text-align:center;color:var(--gray-600);margin-bottom:20px;">
+                    Sign in to create your professional CV
+                </p>
+                <div class="auth-buttons">
+                    <button class="btn btn-primary btn-block btn-lg" onclick="signInWithGoogle()">
+                        <i class="fab fa-google"></i> Sign in with Google
+                    </button>
+                    <button class="btn btn-outline btn-block btn-lg" onclick="signInWithEmail()">
+                        <i class="fas fa-envelope"></i> Sign in with Email
+                    </button>
+                </div>
+                <div id="emailAuthForm" style="display:none;margin-top:16px;">
+                    <div class="form-group">
+                        <input type="email" id="loginEmail" class="form-control" placeholder="Email address">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="loginPassword" class="form-control" placeholder="Password">
+                    </div>
+                    <button class="btn btn-primary btn-block" onclick="signInWithEmailPassword()">
+                        Sign In
+                    </button>
+                    <p style="text-align:center;margin-top:8px;font-size:13px;color:var(--gray-500);">
+                        Don't have an account? <a href="#" onclick="showSignUp()">Sign Up</a>
+                    </p>
+                </div>
+                <div id="signUpForm" style="display:none;margin-top:16px;">
+                    <div class="form-group">
+                        <input type="text" id="signUpName" class="form-control" placeholder="Full Name">
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="signUpEmail" class="form-control" placeholder="Email address">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="signUpPassword" class="form-control" placeholder="Password (min 6 characters)">
+                    </div>
+                    <button class="btn btn-primary btn-block" onclick="signUpWithEmail()">
+                        Create Account
+                    </button>
+                    <p style="text-align:center;margin-top:8px;font-size:13px;color:var(--gray-500);">
+                        Already have an account? <a href="#" onclick="showSignIn()">Sign In</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== LIVE LINK MODAL ===== -->
+    <div class="modal" id="liveLinkModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-link"></i> Your Live CV Link</h3>
+                <button class="modal-close" onclick="closeLiveLinkModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="color:var(--gray-600);margin-bottom:12px;">
+                    Your portfolio CV has been saved! Share this link:
+                </p>
+                <div style="display:flex;gap:8px;margin-bottom:16px;">
+                    <input type="text" id="liveLinkInput" readonly style="flex:1;padding:10px;border:2px solid var(--gray-200);border-radius:8px;font-size:14px;background:var(--gray-100);">
+                    <button class="btn btn-primary" onclick="copyLiveLink()">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                </div>
+                <div style="padding:12px;background:#fefce8;border:1px solid #fde68a;border-radius:6px;font-size:13px;color:#92400e;">
+                    <i class="fas fa-info-circle"></i> 
+                    This link is permanently hosted on ProCV. Share it anywhere!
+                </div>
+                <div style="margin-top:12px;">
+                    <button class="btn btn-outline btn-sm" onclick="window.location.href='my-cvs.html'" style="width:100%;">
+                        <i class="fas fa-folder"></i> View All My CVs
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeLiveLinkModal()">Close</button>
+                <button class="btn btn-success" onclick="openLiveLink()">
+                    <i class="fas fa-external-link-alt"></i> Open
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== UPGRADE MODAL ===== -->
+    <div class="modal" id="upgradeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-crown" style="color:#F59E0B;"></i> Premium Template</h3>
+                <button class="modal-close" onclick="closeUpgradeModal()">×</button>
+            </div>
+            <div class="modal-body" style="text-align:center;padding:30px;">
+                <div style="font-size:48px;margin-bottom:16px;">🔒</div>
+                <h4 style="margin-bottom:8px;">This is a Premium Template</h4>
+                <p style="color:var(--gray-600);margin-bottom:16px;">
+                    Upgrade to Pro to unlock this template and all premium features.
+                </p>
+                <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                    <button class="btn btn-primary" onclick="closeUpgradeModal();window.location.href='pricing.html'">
+                        <i class="fas fa-crown"></i> Upgrade to Pro
+                    </button>
+                    <button class="btn btn-outline" onclick="closeUpgradeModal()">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TEMPLATE PREVIEW MODAL ===== -->
+    <div class="modal" id="templatePreviewModal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3 id="previewModalTitle">Template Preview</h3>
+                <button class="modal-close" onclick="closeTemplatePreview()">×</button>
+            </div>
+            <div class="modal-body preview-scroll">
+                <div id="previewModalContent" class="a4-preview">
+                    <!-- Template preview rendered here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span id="previewPlanBadge" style="margin-right:auto;padding:4px 12px;border-radius:50px;font-size:12px;font-weight:600;"></span>
+                <button class="btn btn-secondary" onclick="closeTemplatePreview()">Close</button>
+                <button class="btn btn-primary" id="previewCustomizeBtn">
+                    <i class="fas fa-pen"></i> Customize This Template
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ===== SCRIPTS ===== -->
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore-compat.js"></script>
+    
+    <!-- ProCV Scripts - ORDER MATTERS -->
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/templates.js"></script>
+    <script src="js/payment.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

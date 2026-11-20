@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - ProCV</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        .pricing-page {
+            padding: 120px 0 60px;
+            background: var(--gray-100);
+            min-height: 100vh;
+        }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .pricing-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+        .pricing-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        .pricing-card.featured {
+            border-color: var(--primary);
+            transform: scale(1.02);
+            box-shadow: var(--shadow-lg);
+        }
+        .pricing-card.featured:hover {
+            transform: scale(1.04);
+        }
+        .pricing-card .plan-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+        .pricing-card h3 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--dark);
+        }
+        .pricing-card .price {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 12px 0;
+        }
+        .pricing-card .price span {
+            font-size: 18px;
+            font-weight: 400;
+            color: var(--gray-500);
+        }
+        .pricing-card .plan-desc {
+            color: var(--gray-600);
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        .pricing-card ul {
+            list-style: none;
+            text-align: left;
+            margin: 16px 0;
+        }
+        .pricing-card ul li {
+            padding: 6px 0;
+            color: var(--gray-700);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .pricing-card ul li i {
+            color: var(--success);
+            width: 20px;
+        }
+        .pricing-card .btn {
+            width: 100%;
+            justify-content: center;
+            margin-top: 8px;
+        }
+        .pricing-card .btn-outline {
+            border-color: var(--gray-300);
+        }
+        .featured-badge {
+            display: inline-block;
+            background: var(--primary-gradient);
+            color: white;
+            padding: 4px 16px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        .payment-methods {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .payment-methods span {
+            font-size: 12px;
+            color: var(--gray-500);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .payment-methods i {
+            font-size: 20px;
+        }
+        @media (max-width: 768px) {
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+            .pricing-card.featured:hover {
+                transform: scale(1.02);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="nav-logo">
+                    <a href="index.html">
+                        <span class="logo-icon">📄</span>
+                        <span class="logo-text">Pro<span class="highlight">CV</span></span>
+                    </a>
+                </div>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#templates">Templates</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <div id="authButtons">
+                        <button class="btn btn-outline btn-sm" onclick="openLoginModal()">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                        <button class="btn btn-primary btn-sm" onclick="window.location.href='builder.html'">
+                            <i class="fas fa-plus-circle"></i> Create My CV
+                        </button>
+                    </div>
+                    <div id="userProfile" style="display:none;">
+                        <div class="user-profile-btn" onclick="toggleUserMenu()">
+                            <img id="userAvatar" src="" alt="User">
+                            <span id="userName">User</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="builder.html"><i class="fas fa-file-alt"></i> My CV</a>
+                            <a href="#" onclick="showUserProfile()"><i class="fas fa-user"></i> Profile</a>
+                            <a href="#" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== PRICING PAGE ===== -->
+    <section class="pricing-page">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Pricing</span>
+                <h2>Choose Your <span class="highlight">Plan</span></h2>
+                <p>Start free, upgrade when you need more</p>
+            </div>
+
+            <div class="pricing-grid">
+                <!-- Free Plan -->
+                <div class="pricing-card">
+                    <div class="plan-icon">📋</div>
+                    <h3>Free</h3>
+                    <div class="price">$0</div>
+                    <p class="plan-desc">Perfect for getting started</p>
+                    <ul>
+                        <li><i class="fas fa-check"></i> 3 Professional Templates</li>
+                        <li><i class="fas fa-check"></i> Basic CV Builder</li>
+                        <li><i class="fas fa-check"></i> PDF Export</li>
+                        <li><i class="fas fa-check"></i> Local Storage</li>
+                        <li><i class="fas fa-check"></i> Live Preview</li>
+                    </ul>
+                    <button class="btn btn-outline" onclick="window.location.href='builder.html'">
+                        Get Started Free
+                    </button>
+                </div>
+
+                <!-- Pro Plan -->
+                <div class="pricing-card featured">
+                    <span class="featured-badge">⭐ Most Popular</span>
+                    <div class="plan-icon">👑</div>
+                    <h3>Pro</h3>
+                    <div class="price">RWF 2,000</div>
+                    <p class="plan-desc">One-time payment, lifetime access</p>
+                    <ul>
+                        <li><i class="fas fa-check"></i> All 15+ Templates</li>
+                        <li><i class="fas fa-check"></i> Premium Templates</li>
+                        <li><i class="fas fa-check"></i> Cover Letter Builder</li>
+                        <li><i class="fas fa-check"></i> CV Checker</li>
+                        <li><i class="fas fa-check"></i> ATS Analysis</li>
+                        <li><i class="fas fa-check"></i> Unlimited CVs</li>
+                        <li><i class="fas fa-check"></i> Multiple CV Versions</li>
+                    </ul>
+                    <button class="btn btn-primary" onclick="initiatePayment('pro')">
+                        <i class="fas fa-crown"></i> Upgrade to Pro
+                    </button>
+                    <div class="payment-methods">
+                        <span><i class="fab fa-cc-visa"></i> Visa</span>
+                        <span><i class="fab fa-cc-mastercard"></i> Mastercard</span>
+                        <span><i class="fas fa-mobile-alt"></i> MTN MoMo</span>
+                        <span><i class="fas fa-mobile-alt"></i> Airtel Money</span>
+                    </div>
+                    <p style="font-size:12px;color:var(--gray-400);margin-top:12px;">
+                        <i class="fas fa-lock"></i> Secure payment by Flutterwave
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== LOGIN MODAL ===== -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-sign-in-alt"></i> Welcome to ProCV</h3>
+                <button class="modal-close" onclick="closeLoginModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="text-align:center;color:var(--gray-600);margin-bottom:20px;">
+                    Sign in to upgrade to Pro
+                </p>
+                <div class="auth-buttons">
+                    <button class="btn btn-primary btn-block btn-lg" onclick="signInWithGoogle()">
+                        <i class="fab fa-google"></i> Sign in with Google
+                    </button>
+                    <button class="btn btn-outline btn-block btn-lg" onclick="signInWithEmail()">
+                        <i class="fas fa-envelope"></i> Sign in with Email
+                    </button>
+                </div>
+                <div id="emailAuthForm" style="display:none;margin-top:16px;">
+                    <div class="form-group">
+                        <input type="email" id="loginEmail" class="form-control" placeholder="Email address">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="loginPassword" class="form-control" placeholder="Password">
+                    </div>
+                    <button class="btn btn-primary btn-block" onclick="signInWithEmailPassword()">
+                        Sign In
+                    </button>
+                    <p style="text-align:center;margin-top:8px;font-size:13px;color:var(--gray-500);">
+                        Don't have an account? <a href="#" onclick="showSignUp()">Sign Up</a>
+                    </p>
+                </div>
+                <div id="signUpForm" style="display:none;margin-top:16px;">
+                    <div class="form-group">
+                        <input type="text" id="signUpName" class="form-control" placeholder="Full Name">
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="signUpEmail" class="form-control" placeholder="Email address">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="signUpPassword" class="form-control" placeholder="Password (min 6 characters)">
+                    </div>
+                    <button class="btn btn-primary btn-block" onclick="signUpWithEmail()">
+                        Create Account
+                    </button>
+                    <p style="text-align:center;margin-top:8px;font-size:13px;color:var(--gray-500);">
+                        Already have an account? <a href="#" onclick="showSignIn()">Sign In</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PAYMENT MODAL ===== -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-crown"></i> Upgrade to Pro</h3>
+                <button class="modal-close" onclick="closePaymentModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align:center;margin-bottom:20px;">
+                    <div style="font-size:36px;">👑</div>
+                    <h4 style="margin-top:8px;">ProCV Pro</h4>
+                    <p style="color:var(--gray-600);">Unlock all premium features</p>
+                    <div style="font-size:28px;font-weight:800;color:var(--primary);margin:12px 0;">
+                        RWF 2,000
+                    </div>
+                    <p style="font-size:13px;color:var(--gray-500);">One-time payment • Lifetime access</p>
+                </div>
+                
+                <div style="display:flex;flex-direction:column;gap:12px;">
+                    <div class="payment-option" onclick="payWithCard()" style="cursor:pointer;padding:16px;border:2px solid var(--gray-200);border-radius:8px;display:flex;align-items:center;gap:12px;transition:all 0.3s;">
+                        <i class="fas fa-credit-card" style="font-size:24px;color:var(--primary);"></i>
+                        <div>
+                            <div style="font-weight:600;">Pay with Card</div>
+                            <div style="font-size:13px;color:var(--gray-500);">Visa / Mastercard</div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="margin-left:auto;color:var(--gray-400);"></i>
+                    </div>
+                    
+                    <div class="payment-option" onclick="payWithMobileMoney('mtn')" style="cursor:pointer;padding:16px;border:2px solid var(--gray-200);border-radius:8px;display:flex;align-items:center;gap:12px;transition:all 0.3s;">
+                        <i class="fas fa-mobile-alt" style="font-size:24px;color:#FFB300;"></i>
+                        <div>
+                            <div style="font-weight:600;">MTN Mobile Money</div>
+                            <div style="font-size:13px;color:var(--gray-500);">Pay with MTN MoMo</div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="margin-left:auto;color:var(--gray-400);"></i>
+                    </div>
+                    
+                    <div class="payment-option" onclick="payWithMobileMoney('airtel')" style="cursor:pointer;padding:16px;border:2px solid var(--gray-200);border-radius:8px;display:flex;align-items:center;gap:12px;transition:all 0.3s;">
+                        <i class="fas fa-mobile-alt" style="font-size:24px;color:#E74C3C;"></i>
+                        <div>
+                            <div style="font-weight:600;">Airtel Money</div>
+                            <div style="font-size:13px;color:var(--gray-500);">Pay with Airtel Money</div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="margin-left:auto;color:var(--gray-400);"></i>
+                    </div>
+                </div>
+                
+                <div style="margin-top:16px;padding:12px;background:#fefce8;border:1px solid #fde68a;border-radius:6px;font-size:12px;color:#92400e;">
+                    <i class="fas fa-lock"></i> 
+                    Secure payment powered by Flutterwave
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore-compat.js"></script>
+    
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/payment.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

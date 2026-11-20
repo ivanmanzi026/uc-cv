@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Templates - ProCV</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/templates.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="nav-logo">
+                    <a href="index.html">
+                        <span class="logo-icon">📄</span>
+                        <span class="logo-text">Pro<span class="highlight">CV</span></span>
+                    </a>
+                </div>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="templates.html" class="active">Templates</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <button class="btn btn-primary btn-sm" onclick="window.location.href='builder.html'">
+                        <i class="fas fa-plus-circle"></i> Create My CV
+                    </button>
+                    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="templates-page">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Templates</span>
+                <h2>Choose Your <span class="highlight">Perfect Style</span></h2>
+                <p>All templates are professionally designed and ATS-friendly</p>
+            </div>
+
+            <div class="template-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="free">Free</button>
+                <button class="filter-btn" data-filter="premium">Premium</button>
+                <button class="filter-btn" data-filter="ats">ATS-Friendly</button>
+            </div>
+
+            <div class="templates-grid-full">
+                <!-- Template cards with full previews -->
+                <div class="template-full free" data-category="free ats">
+                    <div class="template-full-preview classic-preview">
+                        <!-- Full preview mockup -->
+                    </div>
+                    <div class="template-full-info">
+                        <h3>Classic</h3>
+                        <p>Professional black & white design perfect for corporate roles.</p>
+                        <div class="template-meta">
+                            <span class="badge">Free</span>
+                            <span class="badge">ATS-Friendly</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="window.location.href='builder.html?template=classic'">
+                            Use Template
+                        </button>
+                    </div>
+                </div>
+
+                <!-- More templates... -->
+            </div>
+        </div>
+    </section>
+
+    <script src="js/config.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

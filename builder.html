@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Build Your CV - ProCV</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/builder.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ===== BUILDER LAYOUT ===== */
+        .builder {
+            padding: 80px 0 40px;
+            background: var(--gray-100);
+            min-height: 100vh;
+        }
+
+        .builder-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding: 16px 24px;
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .builder-header h1 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .builder-header .template-badge {
+            font-size: 12px;
+            padding: 4px 14px;
+            border-radius: 50px;
+            background: var(--gray-200);
+            color: var(--gray-600);
+        }
+
+        .builder-header .template-badge.portfolio {
+            background: linear-gradient(135deg, #7C3AED, #2563EB);
+            color: white;
+        }
+
+        .builder-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .builder-actions .btn {
+            font-size: 13px;
+            padding: 8px 16px;
+        }
+
+        /* ===== BUILDER WRAPPER ===== */
+        .builder-wrapper {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        /* ===== FORM PANEL ===== */
+        .builder-form {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            max-height: calc(100vh - 180px);
+            overflow-y: auto;
+            position: sticky;
+            top: 80px;
+        }
+
+        .builder-form::-webkit-scrollbar {
+            width: 4px;
+        }
+        .builder-form::-webkit-scrollbar-track {
+            background: var(--gray-100);
+            border-radius: 2px;
+        }
+        .builder-form::-webkit-scrollbar-thumb {
+            background: var(--gray-400);
+            border-radius: 2px;
+        }
+
+        .form-section {
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .section-header-form {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .section-header-form h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-header-form h3 i {
+            color: var(--primary);
+            font-size: 16px;
+        }
+
+        .add-btn {
+            font-size: 11px;
+            padding: 3px 12px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 3px;
+        }
+
+        .form-group .required {
+            color: var(--danger);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid var(--gray-200);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 13px;
+            transition: var(--transition);
+            background: var(--white);
+            color: var(--gray-900);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 50px;
+        }
+
+        /* Entry Cards */
+        .entry-card {
+            background: var(--gray-100);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid var(--gray-200);
+            position: relative;
+        }
+
+        .entry-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .entry-card .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .entry-card .entry-header .entry-title {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--dark);
+        }
+
+        .entry-card .entry-header .entry-remove {
+            background: none;
+            border: none;
+            color: var(--gray-500);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        .entry-card .entry-header .entry-remove:hover {
+            color: var(--danger);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .entry-card .form-group:last-child {
+            margin-bottom: 0;
+        }
+        .entry-card .form-row {
+            gap: 6px;
+        }
+
+        /* Skills */
+        .skill-tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .skill-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--primary);
+            color: var(--white);
+            padding: 3px 10px 3px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .skill-tag .remove-skill {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.7);
+            cursor: pointer;
+            font-size: 12px;
+            padding: 0 2px;
+            transition: var(--transition);
+        }
+
+        .skill-tag .remove-skill:hover {
+            color: var(--white);
+        }
+
+        .skill-input-group {
+            display: flex;
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .skill-input-group input {
+            flex: 1;
+            padding: 6px 10px;
+            border: 2px solid var(--gray-200);
+            border-radius: 6px;
+            font-size: 13px;
+        }
+        .skill-input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .skill-input-group button {
+            padding: 6px 14px;
+            font-size: 12px;
+        }
+
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 2px solid var(--gray-200);
+            flex-wrap: wrap;
+        }
+
+        .form-actions .btn {
+            flex: 1;
+            justify-content: center;
+            font-size: 13px;
+            padding: 10px 16px;
+            min-width: 100px;
+        }
+
+        /* ===== PREVIEW PANEL ===== */
+        .builder-preview {
+            position: sticky;
+            top: 80px;
+        }
+
+        .preview-container {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .preview-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            background: var(--gray-100);
+            border-bottom: 1px solid var(--gray-200);
+            font-size: 12px;
+            color: var(--gray-600);
+        }
+
+        .preview-toolbar i {
+            margin-right: 4px;
+        }
+
+        .preview-zoom {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .preview-zoom button {
+            width: 26px;
+            height: 26px;
+            border: 1px solid var(--gray-300);
+            border-radius: 4px;
+            background: var(--white);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-700);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview-zoom button:hover {
+            background: var(--gray-200);
+        }
+
+        #zoomLevel {
+            font-size: 11px;
+            font-weight: 600;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .preview-wrapper {
+            padding: 16px;
+            overflow: auto;
+            background: var(--gray-100);
+            display: flex;
+            justify-content: center;
+            max-height: calc(100vh - 200px);
+            min-height: 500px;
+        }
+
+        .cv-preview {
+            width: 210mm;
+            min-height: 297mm;
+            background: var(--white);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            padding: 0;
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+            font-size: 11px;
+            line-height: 1.5;
+            color: var(--dark);
+            overflow: hidden;
+            transform-origin: top center;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .builder-wrapper {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .builder-form {
+                max-height: none;
+                overflow-y: visible;
+                position: relative;
+                top: 0;
+            }
+            .builder-preview {
+                position: relative;
+                top: 0;
+            }
+            .preview-wrapper {
+                max-height: 500px;
+                min-height: 400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .builder {
+                padding: 70px 0 20px;
+            }
+            .builder-header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+                padding: 16px;
+            }
+            .builder-actions {
+                justify-content: center;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .preview-wrapper {
+                padding: 8px;
+                max-height: 400px;
+                min-height: 300px;
+            }
+            .cv-preview {
+                width: 100%;
+                min-height: auto;
+                transform: none !important;
+            }
+            .builder-form {
+                padding: 16px;
+            }
+            .form-actions {
+                flex-direction: column;
+            }
+            .form-actions .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .builder-header h1 {
+                font-size: 16px;
+            }
+            .builder-actions .btn {
+                font-size: 11px;
+                padding: 6px 12px;
+            }
+            .section-header-form h3 {
+                font-size: 13px;
+            }
+        }
+
+        /* ===== EDITABLE HIGHLIGHT ===== */
+        .cv-preview .editable-field {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 2px 4px;
+            border-radius: 4px;
+            border: 1px dashed transparent;
+        }
+
+        .cv-preview .editable-field:hover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.04);
+        }
+
+        .cv-preview .editable-field .edit-hint {
+            display: none;
+            position: absolute;
+            top: -20px;
+            right: 0;
+            font-size: 9px;
+            color: var(--primary);
+            background: var(--white);
+            padding: 1px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--primary);
+            font-weight: 600;
+        }
+
+        .cv-preview .editable-field:hover .edit-hint {
+            display: block;
+        }
+
+        /* ===== DOWNLOAD DROPDOWN ===== */
+        .download-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .download-dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: var(--white);
+            min-width: 160px;
+            box-shadow: var(--shadow-lg);
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-200);
+            z-index: 100;
+            padding: 4px 0;
+            margin-top: 4px;
+        }
+
+        .download-dropdown-content.active {
+            display: block;
+        }
+
+        .download-dropdown-content button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 10px 16px;
+            border: none;
+            background: none;
+            font-family: inherit;
+            font-size: 13px;
+            color: var(--gray-700);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .download-dropdown-content button:hover {
+            background: var(--gray-100);
+            color: var(--primary);
+        }
+
+        .download-dropdown-content button i {
+            width: 18px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="nav-logo">
+                    <a href="index.html">
+                        <span class="logo-icon">📄</span>
+                        <span class="logo-text">Pro<span class="highlight">CV</span></span>
+                    </a>
+                </div>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#templates">Templates</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="my-cvs.html">My CVs</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <div id="authButtons" style="display:none;">
+                        <button class="btn btn-outline btn-sm" onclick="openLoginModal()">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                    </div>
+                    <div id="userProfile" style="display:none;">
+                        <div class="user-profile-btn" onclick="toggleUserMenu()">
+                            <img id="userAvatar" src="" alt="User">
+                            <span id="userName">User</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="builder.html"><i class="fas fa-file-alt"></i> My CV</a>
+                            <a href="my-cvs.html"><i class="fas fa-folder"></i> All My CVs</a>
+                            <a href="#" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== BUILDER ===== -->
+    <section class="builder">
+        <div class="container">
+            <!-- Header -->
+            <div class="builder-header">
+                <div>
+                    <h1 id="builderTitle">📄 Create Your CV</h1>
+                    <span class="template-badge" id="templateBadge">Free Template</span>
+                </div>
+                <div class="builder-actions">
+                    <button class="btn btn-outline btn-sm" onclick="window.location.href='index.html#templates'">
+                        <i class="fas fa-grid-2"></i> Change Template
+                    </button>
+                    <button class="btn btn-success btn-sm" onclick="downloadPDF()">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </button>
+                    <div class="download-dropdown">
+                        <button class="btn btn-secondary btn-sm" onclick="toggleDownloadDropdown()">
+                            <i class="fas fa-download"></i> Download <i class="fas fa-chevron-down" style="font-size:10px;"></i>
+                        </button>
+                        <div class="download-dropdown-content" id="downloadDropdown">
+                            <button onclick="downloadPDF()"><i class="fas fa-file-pdf"></i> PDF</button>
+                            <button onclick="downloadDOCX()"><i class="fas fa-file-word"></i> DOCX</button>
+                            <button onclick="downloadTXT()"><i class="fas fa-file-alt"></i> TXT</button>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="saveAsPortfolio()" id="savePortfolioBtn" style="display:none;">
+                        <i class="fas fa-link"></i> Save as Portfolio
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="builder-wrapper">
+                <!-- LEFT: FORM -->
+                <div class="builder-form" id="builderForm">
+                    <!-- Personal Information -->
+                    <div class="form-section">
+                        <div class="section-header-form">
+                            <h3><i class="fas fa-user"></i> Personal Information</h3>
+                        </div>
+                        <div class="form-group">
+                            <label>Full Name <span class="required">*</span></label>
+                            <input type="text" id="fullName" placeholder="e.g. John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Professional Title <span class="required">*</span></label>
+                            <input type="text" id="professionalTitle" placeholder="e.g. Front-End Developer" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Email <span class="required">*</span></label>
+                                <input type="email" id="email" placeholder="john@example.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="tel" id="phone" placeholder="+1 234 567 890">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Location</label>
+                                <input type="text" id="location" placeholder="City, Country">
+                            </div>
+                            <div class="form-group">
+                                <label>LinkedIn</label>
+                                <input type="url" id="linkedin" placeholder="linkedin.com/in/username">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Website/Portfolio</label>
+                            <input type="url" id="website" placeholder="yourportfolio.com">
+                        </div>
+                    </div>
+
+                    <!-- Professional Summary -->
+                    <div class="form-section">
+                        <div class="section-header-form">
+                            <h3><i class="fas fa-align-left"></i> Professional Summary</h3>
+                        </div>
+                        <div class="form-group">
+                            <label>Summary <span class="required">*</span></label>
+                            <textarea id="summary" rows="3" placeholder="Write a brief professional summary..." required></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Education -->
+                    <div class="form-section">
+                        <div class="section-header-form">
+                            <h3><i class="fas fa-graduation-cap"></i> Education</h3>
+                            <button class="btn btn-outline btn-sm add-btn" onclick="addEducation()">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                        <div id="educationContainer"></div>
+                    </div>
+
+                    <!-- Experience -->
+                    <div class="form-section">
+                        <div class="section-header-form">
+                            <h3><i class="fas fa-briefcase"></i> Work Experience</h3>
+                            <button class="btn btn-outline btn-sm add-btn" onclick="addExperience()">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                        <div id="experienceContainer"></div>
+                    </div>
+
+                    <!-- Skills -->
+                    <div class="form-section">
+                        <div class="section-header-form">
+                            <h3><i class="fas fa-code"></i> Skills</h3>
+                            <button class="btn btn-outline btn-sm add-btn" onclick="addSkill()">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                        <div id="skillsContainer"></div>
+                    </div>
+
+                    <!-- Projects -->
+                    <div class="form-section">
+                        <div class="section-header-form">
+                            <h3><i class="fas fa-project-diagram"></i> Projects</h3>
+                            <button class="btn btn-outline btn-sm add-btn" onclick="addProject()">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                        <div id="projectsContainer"></div>
+                    </div>
+
+                    <!-- Languages -->
+                    <div class="form-section">
+                        <div class="section-header-form">
+                            <h3><i class="fas fa-language"></i> Languages</h3>
+                            <button class="btn btn-outline btn-sm add-btn" onclick="addLanguage()">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                        <div id="languagesContainer"></div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="form-actions">
+                        <button class="btn btn-success" onclick="saveToStorage()">
+                            <i class="fas fa-save"></i> Save Progress
+                        </button>
+                        <button class="btn btn-danger" onclick="confirmClear()">
+                            <i class="fas fa-trash"></i> Clear All
+                        </button>
+                    </div>
+                </div>
+
+                <!-- RIGHT: CV PREVIEW -->
+                <div class="builder-preview">
+                    <div class="preview-container">
+                        <div class="preview-toolbar">
+                            <span><i class="fas fa-eye"></i> Live Preview</span>
+                            <span class="preview-zoom">
+                                <button onclick="zoomOut()" title="Zoom Out">−</button>
+                                <span id="zoomLevel">100%</span>
+                                <button onclick="zoomIn()" title="Zoom In">+</button>
+                            </span>
+                        </div>
+                        <div class="preview-wrapper" id="previewWrapper">
+                            <div id="cvPreview" class="cv-preview">
+                                <!-- CV rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== LOGIN MODAL ===== -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-sign-in-alt"></i> Welcome to ProCV</h3>
+                <button class="modal-close" onclick="closeLoginModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="text-align:center;color:var(--gray-600);margin-bottom:20px;">
+                    Sign in to create your professional CV
+                </p>
+                <div class="auth-buttons">
+                    <button class="btn btn-primary btn-block btn-lg" onclick="signInWithGoogle()">
+                        <i class="fab fa-google"></i> Sign in with Google
+                    </button>
+                    <button class="btn btn-outline btn-block btn-lg" onclick="signInWithEmail()">
+                        <i class="fas fa-envelope"></i> Sign in with Email
+                    </button>
+                </div>
+                <div id="emailAuthForm" style="display:none;margin-top:16px;">
+                    <div class="form-group">
+                        <input type="email" id="loginEmail" class="form-control" placeholder="Email address">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="loginPassword" class="form-control" placeholder="Password">
+                    </div>
+                    <button class="btn btn-primary btn-block" onclick="signInWithEmailPassword()">
+                        Sign In
+                    </button>
+                    <p style="text-align:center;margin-top:8px;font-size:13px;color:var(--gray-500);">
+                        Don't have an account? <a href="#" onclick="showSignUp()">Sign Up</a>
+                    </p>
+                </div>
+                <div id="signUpForm" style="display:none;margin-top:16px;">
+                    <div class="form-group">
+                        <input type="text" id="signUpName" class="form-control" placeholder="Full Name">
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="signUpEmail" class="form-control" placeholder="Email address">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="signUpPassword" class="form-control" placeholder="Password (min 6 characters)">
+                    </div>
+                    <button class="btn btn-primary btn-block" onclick="signUpWithEmail()">
+                        Create Account
+                    </button>
+                    <p style="text-align:center;margin-top:8px;font-size:13px;color:var(--gray-500);">
+                        Already have an account? <a href="#" onclick="showSignIn()">Sign In</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== LIVE LINK MODAL ===== -->
+    <div class="modal" id="liveLinkModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-link"></i> Your Live CV Link</h3>
+                <button class="modal-close" onclick="closeLiveLinkModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="color:var(--gray-600);margin-bottom:12px;">
+                    Your portfolio CV has been saved! Share this link:
+                </p>
+                <div style="display:flex;gap:8px;margin-bottom:16px;">
+                    <input type="text" id="liveLinkInput" readonly style="flex:1;padding:10px;border:2px solid var(--gray-200);border-radius:8px;font-size:14px;background:var(--gray-100);">
+                    <button class="btn btn-primary" onclick="copyLiveLink()">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                </div>
+                <div style="padding:12px;background:#fefce8;border:1px solid #fde68a;border-radius:6px;font-size:13px;color:#92400e;">
+                    <i class="fas fa-info-circle"></i> 
+                    This link is permanently hosted on ProCV. Share it anywhere!
+                </div>
+                <div style="margin-top:12px;">
+                    <button class="btn btn-outline btn-sm" onclick="window.location.href='my-cvs.html'" style="width:100%;">
+                        <i class="fas fa-folder"></i> View All My CVs
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeLiveLinkModal()">Close</button>
+                <button class="btn btn-success" onclick="openLiveLink()">
+                    <i class="fas fa-external-link-alt"></i> Open
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ===== SCRIPTS ===== -->
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore-compat.js"></script>
+
+    <!-- ProCV Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/templates.js"></script>
+    <script src="js/pdf.js"></script>
+    <script src="js/builder.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

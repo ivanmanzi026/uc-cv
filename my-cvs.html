@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My CVs - ProCV</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        .my-cvs-page {
+            padding: 120px 0 60px;
+            background: var(--gray-100);
+            min-height: 100vh;
+        }
+        .my-cvs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .my-cvs-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--dark);
+        }
+        .my-cvs-header p {
+            color: var(--gray-600);
+        }
+        .cv-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+        .cv-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-light);
+        }
+        .cv-card .cv-preview-img {
+            width: 100%;
+            aspect-ratio: 210/297;
+            background: var(--gray-100);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: var(--gray-400);
+        }
+        .cv-card .cv-preview-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .cv-card .cv-info {
+            padding: 16px;
+        }
+        .cv-card .cv-info h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        .cv-card .cv-info .cv-meta {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-top: 4px;
+        }
+        .cv-card .cv-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .cv-card .cv-actions .btn {
+            flex: 1;
+            justify-content: center;
+            font-size: 12px;
+            padding: 6px 12px;
+            min-width: 60px;
+        }
+        .badge-portfolio {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 50px;
+            font-size: 10px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #7C3AED, #2563EB);
+            color: white;
+        }
+        .badge-standard {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 50px;
+            font-size: 10px;
+            font-weight: 600;
+            background: var(--gray-200);
+            color: var(--gray-600);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray-500);
+        }
+        .empty-state i {
+            font-size: 48px;
+            color: var(--gray-300);
+            margin-bottom: 16px;
+        }
+        .empty-state h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+        .cvs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 24px;
+        }
+        .loading-cvs {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .loading-cvs i {
+            font-size: 32px;
+            color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+        .loading-cvs p {
+            margin-top: 12px;
+            color: var(--gray-500);
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @media (max-width: 768px) {
+            .cvs-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            }
+        }
+        @media (max-width: 480px) {
+            .my-cvs-header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            .my-cvs-header .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="nav-logo">
+                    <a href="index.html">
+                        <span class="logo-icon">📄</span>
+                        <span class="logo-text">Pro<span class="highlight">CV</span></span>
+                    </a>
+                </div>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#templates">Templates</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="my-cvs.html" class="active">My CVs</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <div id="authButtons" style="display:none;">
+                        <button class="btn btn-outline btn-sm" onclick="openLoginModal()">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                    </div>
+                    <div id="userProfile" style="display:none;">
+                        <div class="user-profile-btn" onclick="toggleUserMenu()">
+                            <img id="userAvatar" src="" alt="User">
+                            <span id="userName">User</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="builder.html"><i class="fas fa-file-alt"></i> My CV</a>
+                            <a href="my-cvs.html"><i class="fas fa-folder"></i> All My CVs</a>
+                            <a href="#" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== MY CVs PAGE ===== -->
+    <section class="my-cvs-page">
+        <div class="container">
+            <div class="my-cvs-header">
+                <div>
+                    <h1>📁 My CVs</h1>
+                    <p>Manage all your portfolio CVs and share them with employers</p>
+                </div>
+                <div>
+                    <button class="btn btn-primary" onclick="window.location.href='index.html#templates'">
+                        <i class="fas fa-plus"></i> Create New CV
+                    </button>
+                </div>
+            </div>
+
+            <div id="cvsGrid" class="cvs-grid">
+                <div class="loading-cvs">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading your CVs...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== DELETE CONFIRMATION MODAL ===== -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-trash" style="color:var(--danger);"></i> Delete CV</h3>
+                <button class="modal-close" onclick="closeDeleteModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this CV?</p>
+                <p style="color:var(--gray-500);font-size:13px;margin-top:8px;">
+                    This action cannot be undone. The live link will stop working.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash"></i> Delete Permanently
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== LOGIN MODAL ===== -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-sign-in-alt"></i> Welcome to ProCV</h3>
+                <button class="modal-close" onclick="closeLoginModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="text-align:center;color:var(--gray-600);margin-bottom:20px;">
+                    Sign in to view your CVs
+                </p>
+                <div class="auth-buttons">
+                    <button class="btn btn-primary btn-block btn-lg" onclick="signInWithGoogle()">
+                        <i class="fab fa-google"></i> Sign in with Google
+                    </button>
+                    <button class="btn btn-outline btn-block btn-lg" onclick="signInWithEmail()">
+                        <i class="fas fa-envelope"></i> Sign in with Email
+                    </button>
+                </div>
+                <div id="emailAuthForm" style="display:none;margin-top:16px;">
+                    <div class="form-group">
+                        <input type="email" id="loginEmail" class="form-control" placeholder="Email address">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="loginPassword" class="form-control" placeholder="Password">
+                    </div>
+                    <button class="btn btn-primary btn-block" onclick="signInWithEmailPassword()">
+                        Sign In
+                    </button>
+                    <p style="text-align:center;margin-top:8px;font-size:13px;color:var(--gray-500);">
+                        Don't have an account? <a href="#" onclick="showSignUp()">Sign Up</a>
+                    </p>
+                </div>
+                <div id="signUpForm" style="display:none;margin-top:16px;">
+                    <div class="form-group">
+                        <input type="text" id="signUpName" class="form-control" placeholder="Full Name">
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="signUpEmail" class="form-control" placeholder="Email address">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="signUpPassword" class="form-control" placeholder="Password (min 6 characters)">
+                    </div>
+                    <button class="btn btn-primary btn-block" onclick="signUpWithEmail()">
+                        Create Account
+                    </button>
+                    <p style="text-align:center;margin-top:8px;font-size:13px;color:var(--gray-500);">
+                        Already have an account? <a href="#" onclick="showSignIn()">Sign In</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore-compat.js"></script>
+    
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/templates.js"></script>
+    <script src="js/main.js"></script>
+    
+    <script>
+        // ============================================================
+        // LOAD MY CVs
+        // ============================================================
+        let deleteCvId = null;
+        
+        function loadMyCvs() {
+            console.log('🔄 Loading My CVs...');
+            
+            const user = typeof getCurrentUser !== 'undefined' ? getCurrentUser() : null;
+            console.log('👤 Current user:', user ? user.uid : 'Not logged in');
+            
+            const grid = document.getElementById('cvsGrid');
+            if (!grid) {
+                console.error('❌ cvsGrid not found');
+                return;
+            }
+            
+            if (!user) {
+                console.log('❌ No user logged in');
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column:1/-1;">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <h3>Please Login</h3>
+                        <p style="color:var(--gray-500);">Sign in to view your saved CVs</p>
+                        <button class="btn btn-primary" onclick="openLoginModal()" style="margin-top:16px;">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Get user CVs from localStorage using main.js function
+            let cvs = [];
+            const key = `procv_user_cvs_${user.uid}`;
+            console.log('🔑 Storage key:', key);
+            
+            try {
+                const storedData = localStorage.getItem(key);
+                console.log('📂 Stored data:', storedData ? 'Found' : 'Not found');
+                
+                if (storedData) {
+                    cvs = JSON.parse(storedData);
+                    console.log('📂 Parsed CVs:', cvs.length, 'items');
+                }
+            } catch (e) {
+                console.error('❌ Error loading CVs:', e);
+            }
+            
+            if (!cvs || cvs.length === 0) {
+                console.log('📭 No CVs found');
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column:1/-1;">
+                        <i class="fas fa-folder-open"></i>
+                        <h3>No CVs yet</h3>
+                        <p style="color:var(--gray-500);">Create your first portfolio CV to get a live link</p>
+                        <button class="btn btn-primary" onclick="window.location.href='index.html#templates'" style="margin-top:16px;">
+                            <i class="fas fa-plus"></i> Create New CV
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            console.log('📋 Rendering', cvs.length, 'CVs');
+            
+            // Get all templates for cover images
+            let allTemplates = [];
+            if (typeof getAllTemplates !== 'undefined') {
+                allTemplates = getAllTemplates();
+            }
+            
+            grid.innerHTML = cvs.map((cv, index) => {
+                const isPortfolio = cv.isPortfolio || false;
+                const template = allTemplates.find(t => t.id === cv.templateId);
+                const coverImage = template?.coverImage || '📄';
+                const templateName = cv.templateName || 'Untitled CV';
+                
+                // Format dates
+                const createdDate = cv.createdAt ? new Date(cv.createdAt).toLocaleDateString() : 'N/A';
+                const updatedDate = cv.updatedAt ? new Date(cv.updatedAt).toLocaleDateString() : 'N/A';
+                
+                // Get the live link
+                const liveLink = cv.liveLink || '#';
+                
+                return `
+                    <div class="cv-card">
+                        <div class="cv-preview-img">
+                            ${coverImage.startsWith('data:image') ? 
+                                `<img src="${coverImage}" alt="${templateName}">` :
+                                `<span style="font-size:48px;">${coverImage}</span>`
+                            }
+                        </div>
+                        <div class="cv-info">
+                            <h3>${templateName}</h3>
+                            <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">
+                                <span class="badge-portfolio">🎨 Portfolio</span>
+                            </div>
+                            <div class="cv-meta">
+                                Created: ${createdDate}
+                                <br>
+                                Updated: ${updatedDate}
+                            </div>
+                            <div class="cv-actions">
+                                <button class="btn btn-outline btn-sm" onclick="viewCv('${cv.id}')">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="editCv('${cv.id}')">
+                                    <i class="fas fa-pen"></i> Edit
+                                </button>
+                                <button class="btn btn-success btn-sm" onclick="copyCvLink('${cv.id}')">
+                                    <i class="fas fa-link"></i> Link
+                                </button>
+                                <button class="btn btn-danger btn-sm" onclick="confirmDeleteCv('${cv.id}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            console.log('✅ My CVs rendered');
+        }
+        
+        // ============================================================
+        // CV ACTIONS
+        // ============================================================
+        
+        function viewCv(cvId) {
+            console.log('👁️ Viewing CV:', cvId);
+            const user = typeof getCurrentUser !== 'undefined' ? getCurrentUser() : null;
+            if (!user) {
+                showToast('Please login first', 'error');
+                return;
+            }
+            
+            try {
+                const cvs = getUserCvs(user.uid);
+                const cv = cvs.find(c => c.id === cvId);
+                if (cv && cv.liveLink) {
+                    window.open(cv.liveLink, '_blank');
+                } else {
+                    showToast('CV not found or no live link available', 'error');
+                }
+            } catch (e) {
+                console.error('Error viewing CV:', e);
+                showToast('Error viewing CV', 'error');
+            }
+        }
+        
+        function editCv(cvId) {
+            console.log('✏️ Editing CV:', cvId);
+            const user = typeof getCurrentUser !== 'undefined' ? getCurrentUser() : null;
+            if (!user) {
+                showToast('Please login first', 'error');
+                return;
+            }
+            
+            try {
+                const cvs = getUserCvs(user.uid);
+                const cv = cvs.find(c => c.id === cvId);
+                if (cv) {
+                    // Save CV data to localStorage and redirect to builder
+                    if (cv.data) {
+                        localStorage.setItem('procv_data', JSON.stringify(cv.data));
+                    }
+                    localStorage.setItem('procv_selected_template', cv.templateId);
+                    
+                    // Get template data
+                    let allTemplates = [];
+                    if (typeof getAllTemplates !== 'undefined') {
+                        allTemplates = getAllTemplates();
+                    }
+                    const template = allTemplates.find(t => t.id === cv.templateId);
+                    if (template) {
+                        localStorage.setItem('procv_template_data', JSON.stringify(template));
+                    }
+                    
+                    showToast('Loading CV for editing...');
+                    window.location.href = 'builder.html?edit=' + cvId;
+                } else {
+                    showToast('CV not found', 'error');
+                }
+            } catch (e) {
+                console.error('Error editing CV:', e);
+                showToast('Error editing CV', 'error');
+            }
+        }
+        
+        function copyCvLink(cvId) {
+            console.log('📋 Copying link for CV:', cvId);
+            const user = typeof getCurrentUser !== 'undefined' ? getCurrentUser() : null;
+            if (!user) {
+                showToast('Please login first', 'error');
+                return;
+            }
+            
+            try {
+                const cvs = getUserCvs(user.uid);
+                const cv = cvs.find(c => c.id === cvId);
+                if (cv && cv.liveLink) {
+                    // Use modern clipboard API with fallback
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(cv.liveLink)
+                            .then(() => showToast('✅ Link copied to clipboard!'))
+                            .catch(() => fallbackCopy(cv.liveLink));
+                    } else {
+                        fallbackCopy(cv.liveLink);
+                    }
+                } else {
+                    showToast('CV not found', 'error');
+                }
+            } catch (e) {
+                console.error('Error copying link:', e);
+                showToast('Error copying link', 'error');
+            }
+        }
+        
+        function fallbackCopy(text) {
+            const input = document.createElement('input');
+            input.value = text;
+            document.body.appendChild(input);
+            input.select();
+            try {
+                document.execCommand('copy');
+                showToast('✅ Link copied to clipboard!');
+            } catch (e) {
+                showToast('Failed to copy link', 'error');
+            }
+            document.body.removeChild(input);
+        }
+        
+        function confirmDeleteCv(cvId) {
+            console.log('🗑️ Confirming delete for CV:', cvId);
+            deleteCvId = cvId;
+            document.getElementById('deleteModal').classList.add('active');
+        }
+        
+        function closeDeleteModal() {
+            deleteCvId = null;
+            document.getElementById('deleteModal').classList.remove('active');
+        }
+        
+        // ============================================================
+        // TOAST HELPER
+        // ============================================================
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            if (!container) {
+                const newContainer = document.createElement('div');
+                newContainer.id = 'toastContainer';
+                newContainer.className = 'toast-container';
+                document.body.appendChild(newContainer);
+            }
+            
+            const toast = document.createElement('div');
+            toast.className = `toast-item ${type}`;
+            const icon = type === 'success' ? 'fa-check-circle' : 
+                         type === 'error' ? 'fa-exclamation-circle' : 
+                         'fa-info-circle';
+            toast.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
+            document.getElementById('toastContainer').appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+        
+        // ============================================================
+        // INIT
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 My CVs page loaded');
+            
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', function() {
+                    const user = typeof getCurrentUser !== 'undefined' ? getCurrentUser() : null;
+                    if (!user || !deleteCvId) {
+                        closeDeleteModal();
+                        return;
+                    }
+                    
+                    try {
+                        const cvs = getUserCvs(user.uid);
+                        const filtered = cvs.filter(c => c.id !== deleteCvId);
+                        saveUserCvs(user.uid, filtered);
+                        deleteCvId = null;
+                        closeDeleteModal();
+                        loadMyCvs();
+                        showToast('CV deleted successfully');
+                    } catch (e) {
+                        console.error('Error deleting CV:', e);
+                        showToast('Error deleting CV', 'error');
+                    }
+                });
+            }
+            
+            // Check auth on load
+            setTimeout(function() {
+                if (typeof isUserLoggedIn !== 'undefined' && !isUserLoggedIn()) {
+                    console.log('❌ User not logged in, showing login modal');
+                    if (typeof openLoginModal !== 'undefined') {
+                        openLoginModal();
+                    }
+                } else {
+                    console.log('✅ User logged in, loading CVs');
+                    loadMyCvs();
+                }
+            }, 500);
+        });
+        
+        // ============================================================
+        // EXPOSE GLOBALLY
+        // ============================================================
+        window.viewCv = viewCv;
+        window.editCv = editCv;
+        window.copyCvLink = copyCvLink;
+        window.confirmDeleteCv = confirmDeleteCv;
+        window.closeDeleteModal = closeDeleteModal;
+        window.loadMyCvs = loadMyCvs;
+        window.showToast = showToast;
+    </script>
+</body>
+</html>
