@@ -26,7 +26,7 @@ const FIREBASE_CONFIG = {
 // ============================================================
 
 const API_CONFIG = {
-    baseUrl: "https://uc-cv.onrender.com",
+    baseUrl: "https://uc-cv-backend.onrender.com",
     endpoints: {
         createPayment: "/api/create-payment",
         checkPayment: "/api/check-payment",
