@@ -57,8 +57,16 @@ try {
 // ============================================================
 // 3. MIDDLEWARE
 // ============================================================
+const allowedOrigins = [
+    'http://localhost:5000',
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://127.0.0.1:5500',
+    'https://uc-cv-jykq.onrender.com'
+];
+
 app.use(cors({
-    origin: ['http://localhost:5000', 'http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:5500'],
+    origin: allowedOrigins,
     credentials: true
 }));
 app.use(express.json());
